@@ -48,7 +48,7 @@ namespace GameBot.Backend.Services
 
         #endregion
 
-        #region 任务控制
+        #region 任务开始结束控制
 
         public bool Start()
         {
@@ -64,7 +64,7 @@ namespace GameBot.Backend.Services
 
         #endregion
 
-        #region 核心业务方法
+        #region 截图服务 调用AdbService
 
         /// <summary>
         /// 步骤1：截取设备屏幕
@@ -84,7 +84,9 @@ namespace GameBot.Backend.Services
             
             return await Task.FromResult(screenshotBase64);
         }
+        #endregion
 
+        #region 文字识别服务 调用OcrService
         /// <summary>
         /// 步骤2：图像文字识别（单个区域）
         /// </summary>
@@ -102,7 +104,7 @@ namespace GameBot.Backend.Services
             // 调用 OCR 服务进行单区域文字识别
             string? recognizedText = await _ocrService.RecognizeTextInRegionAsync(screenshotBase64, region);
             
-            Console.WriteLine($"单区域识别完成: {(recognizedText ?? "空")}");
+            Console.WriteLine($"单区域识别完成: {recognizedText ?? "空"}");
             
             return recognizedText;
         }
@@ -139,38 +141,9 @@ namespace GameBot.Backend.Services
             
             return recognizedText?.Select(t => t ?? string.Empty).ToArray();
         }
-
-        /// <summary>
-        /// 步骤3：识别所有招募槽位状态并执行操作
-        /// </summary>
-        /// <param name="screenshotBase64">截图的 Base64 编码</param>
-        /// <param name="slots">槽位配置</param>
-        /// <returns>是否执行了操作</returns>
-        public async Task<bool> ProcessRecruitSlotsAsync(string? screenshotBase64, RecruitSlot[] slots)
-        {
-            if (string.IsNullOrEmpty(screenshotBase64))
-            {
-                Console.WriteLine("截图数据为空，无法识别");
-                return false;
-            }
-
-            if (slots == null || slots.Length == 0)
-            {
-                Console.WriteLine("未配置槽位");
-                return false;
-            }
-
-            // 步骤1：识别所有槽位状态
-            await RecognizeAllSlotsStatusAsync(screenshotBase64, slots);
-
-            // 步骤2：根据状态执行操作
-            return await ExecuteSlotActionsAsync(slots);
-
-        }
-
         #endregion
 
-        #region 招募槽位管理
+        #region 招募槽位管理 调用RecruitService
 
         /// <summary>
         /// 招募槽位状态枚举
@@ -202,6 +175,37 @@ namespace GameBot.Backend.Services
             public string RecognizedText2;   // 区域2识别结果
             public string RecognizedText3;   // 区域3识别结果
         }
+
+        /// <summary>
+        /// 步骤3：识别所有招募槽位状态并执行操作，此处是GameBotService的主方法
+        /// </summary>
+        /// <param name="screenshotBase64">截图的 Base64 编码</param>
+        /// <param name="slots">槽位配置</param>
+        /// <returns>是否执行了操作</returns>
+        public async Task<bool> ProcessRecruitSlotsAsync(string? screenshotBase64, RecruitSlot[] slots)
+        {
+            if (string.IsNullOrEmpty(screenshotBase64))
+            {
+                Console.WriteLine("截图数据为空，无法识别");
+                return false;
+            }
+
+            if (slots == null || slots.Length == 0)
+            {
+                Console.WriteLine("未配置槽位");
+                return false;
+            }
+
+            // 步骤1：识别所有槽位状态
+            await RecognizeAllSlotsStatusAsync(screenshotBase64, slots);
+
+            // 步骤2：根据状态执行操作
+            return await ExecuteSlotActionsAsync(slots);
+
+        }
+
+
+        
 
         /// <summary>
         /// 识别所有招募槽位的状态（使用三个区域）
@@ -275,7 +279,7 @@ namespace GameBot.Backend.Services
         }
 
         /// <summary>
-        /// 执行槽位操作
+        /// 执行槽位操作,根据状态执行不同的操作
         /// </summary>
         private async Task<bool> ExecuteSlotActionsAsync(RecruitSlot[] slots)
         {
