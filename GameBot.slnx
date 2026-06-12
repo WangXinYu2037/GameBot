@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="GameBot.Backend/GameBot.Backend.csproj" />
+  <Project Path="GameBot.Frontend/GameBot.Frontend.csproj" />
+</Solution>

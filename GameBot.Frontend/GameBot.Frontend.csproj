@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    
+    <!-- 自包含部署配置 -->
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <PublishSingleFile>true</PublishSingleFile>
+    <PublishReadyToRun>true</PublishReadyToRun>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 将 Backend.dll 排除在单文件打包之外，保持独立供动态加载 -->
+    <None Include="..\GameBot.Backend\bin\$(Configuration)\net10.0\GameBot.Backend.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </None>
+  </ItemGroup>
+
+  <Target Name="BuildBackendBeforeFrontend" BeforeTargets="Build">
+    <!-- 手动编译后端项目 -->
+    <Exec Command="dotnet build &quot;$(ProjectDir)..\GameBot.Backend\GameBot.Backend.csproj&quot; -c $(Configuration)" />
+  </Target>
+
+</Project>
