@@ -58,7 +58,7 @@ namespace GameBot.Backend.Services
                 // 这是一个通用位置，实际可能需要根据界面调整
                 await TapAsync(2410, 65);
                 Console.WriteLine($"槽位 {slot.Index + 1}: 跳过");
-                await Task.Delay(2000);
+                await Task.Delay(5000);
 
                 await TapAsync(2410, 65);
                 Console.WriteLine($"槽位 {slot.Index + 1}: 跳过");
@@ -162,7 +162,7 @@ namespace GameBot.Backend.Services
                         int y = tagRegions[index].Y + tagRegions[index].Height / 2;
                         await TapAsync(x, y);
                         Console.WriteLine($"点击 Tag {index + 1} ({x}, {y})");
-                        await Task.Delay(500);
+                        await Task.Delay(1000);
                     }
                 }
                 // 调整时间点击确认按钮
@@ -506,7 +506,7 @@ namespace GameBot.Backend.Services
                 await Task.Delay(2000);
                 
                 // 点击确认消耗加急许可立即招募
-                await TapAsync(1700, 2000);
+                await TapAsync(1700, 1000);
                 Console.WriteLine("确认立即招募");
                 await Task.Delay(2000);
             }
