@@ -15,6 +15,7 @@ obj/
 
 # Test screenshots
 Test/
+log/
 
 # Logs
 *.log

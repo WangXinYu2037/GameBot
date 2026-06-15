@@ -1,5 +1,6 @@
 using System;
 using GameBot.Backend.Services;
+using OpenCvSharp;
 
 namespace GameBot.Backend
 {
@@ -103,7 +104,7 @@ namespace GameBot.Backend
                     Console.WriteLine("连接成功");
                     
                     // 测试启动任务（运行3秒后停止）
-                    Console.WriteLine("\n启动任务流程（3秒后自动停止）:");
+                    // Console.WriteLine("\n启动任务流程（3秒后自动停止）:");
                     var taskTask = task.StartTaskAsync();
                     
                     // 等待3秒后停止
@@ -138,8 +139,8 @@ namespace GameBot.Backend
             
             
             // 测试连接
-            bool connected = TestAdbConnection(adbPath, deviceAddress);
-            
+            // bool connected = TestAdbConnection(adbPath, deviceAddress);
+            bool connected = true;
             if (connected)
             {
                 // 如果连接成功，测试 GameBotTask

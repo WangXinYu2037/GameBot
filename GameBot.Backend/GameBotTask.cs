@@ -142,19 +142,24 @@ namespace GameBot.Backend
 
                 // 步骤2-3：识别槽位状态并执行操作
                 bool hasAction = await _gameBotService.ProcessRecruitSlotsAsync(screenshotBase64, _recruitSlots);
-                _isCancelled = true;
-                
-                // 如果没有执行任何操作，等待一段时间后重试
+                // 如果出现高级资深干员或资深干员或者异常情况，停止接下来的一切操作，由人工处理
                 if (!hasAction)
                 {
-                    Console.WriteLine("所有槽位状态未变化，等待10秒后重试");
-                    await Task.Delay(10000);
+                    StopTask();
+                    break;
                 }
-                else
-                {
-                    // 执行了操作，等待2秒后重新检查
-                    await Task.Delay(2000);
-                }
+                
+                // // 如果没有执行任何操作，等待一段时间后重试
+                // if (!hasAction)
+                // {
+                //     Console.WriteLine("所有槽位状态未变化，等待10秒后重试");
+                //     await Task.Delay(10000);
+                // }
+                // else
+                // {
+                //     // 执行了操作，等待2秒后重新检查
+                //     await Task.Delay(2000);
+                // }
             }
         }
 

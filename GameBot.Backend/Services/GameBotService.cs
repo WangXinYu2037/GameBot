@@ -301,11 +301,13 @@ namespace GameBot.Backend.Services
                         hasAction = true;
                         break;
                     
-                    // case RecruitSlotStatus.Idle:
-                    //     // 空闲状态：点击开始招募，计算最优Tag组合
-                    //     await _recruitService.HandleIdleState(slot);
-                    //     hasAction = true;
-                    //     break;
+                    case RecruitSlotStatus.Idle:
+                        // 空闲状态：点击开始招募，计算最优Tag组合
+                        hasAction = await _recruitService.HandleIdleState(slot);
+                        // 如果六星tag，不执行操作
+                        // 如果不是六星tag，执行操作
+    
+                        break;
                     
                     case RecruitSlotStatus.InProgress:
                         // 进行中状态：检查是否加急（isUrgent 参数默认为 false，可根据需求修改）
